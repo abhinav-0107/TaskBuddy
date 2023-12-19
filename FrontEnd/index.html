@@ -1,0 +1,255 @@
+<head>
+    <title>TaskBuddy</title>
+</head>
+<script>
+    function parsedResponse1(data) {
+        let parentElement = document.getElementById('mainArea');
+        for (let i = 0; i < data.length; i++) {
+            let childElement = document.createElement('div');
+            let lineBreak1 = document.createElement('br');
+            let lineBreak2 = document.createElement('br');
+            childElement.setAttribute("id", `${data[i].id}`);
+            const currentId = data[i].id;
+
+            // Title
+            let grandChildElement1 = document.createElement('span');
+            grandChildElement1.innerHTML = data[i].title;
+
+            // Description
+            let grandChildElement2 = document.createElement('span');
+            grandChildElement2.innerHTML = data[i].desc;
+
+            // Edit Button
+            let grandChildElement3 = document.createElement('button');
+            grandChildElement3.innerHTML = "Edit";
+            grandChildElement3.addEventListener("click", () => {
+                // Edit Area
+                let parentElementEdit = document.getElementById('editArea');
+                let lineBreak3 = document.createElement('br');
+                let lineBreak4 = document.createElement('br');
+
+                // Edit Title Input Box
+                let editTitleInput = document.createElement('input');
+                let Text1 = document.createElement('div');
+                Text1.innerHTML = "Edit Title ->";
+
+                // Edit Description Input Box
+                let editDescriptionInput = document.createElement('input');
+                let Text2 = document.createElement('div');
+                Text2.innerHTML = "Edit Description ->";
+
+                // Save Edit Button
+                let sendEdit = document.createElement('button');
+                sendEdit.innerHTML = "Save Edit";
+                sendEdit.addEventListener("click", () => {
+                    let updatedTitle = editTitleInput.value;
+                    let updatedDescription = editDescriptionInput.value;
+                    fetch(`http://localhost:3000/todos/${currentId}`, {
+                        method: "PUT",
+                        body: JSON.stringify({
+                            title: updatedTitle,
+                            desc: updatedDescription
+                        }),
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    }).then((res) => {
+                        res.json().then((data) => {
+                            if (data.message) alert(data.message);
+                            else alert("Todo updated successfully");
+                            document.getElementById("editArea").remove();
+
+                            // Changing Title and Description without reloading
+                            grandChildElement1.innerHTML = updatedTitle;
+                            grandChildElement2.innerHTML = updatedDescription;
+                        });
+                    })
+                });
+
+
+                parentElementEdit.appendChild(Text1);
+                parentElementEdit.appendChild(editTitleInput);
+                parentElementEdit.appendChild(lineBreak3);
+                parentElementEdit.appendChild(lineBreak4);
+                parentElementEdit.appendChild(Text2);
+                parentElementEdit.appendChild(editDescriptionInput);
+                parentElementEdit.appendChild(sendEdit);
+            });
+
+            // Delete Button
+            let grandChildElement4 = document.createElement('button');
+            grandChildElement4.innerHTML = "Delete";
+            grandChildElement4.addEventListener("click", () => {
+                fetch(`http://localhost:3000/todos/${data[i].id}`, {
+                    method: "DELETE"
+                }).then((resp) => {
+                    alert("ToDo deleted successfully!");
+                    console.log(data[i].id);
+                    document.getElementById(`${data[i].id}`).remove();
+                });
+            });
+
+            childElement.appendChild(grandChildElement1);
+            childElement.appendChild(lineBreak2);
+            childElement.appendChild(grandChildElement2);
+            childElement.appendChild(grandChildElement3);
+            childElement.appendChild(grandChildElement4);
+
+            parentElement.appendChild(childElement);
+            parentElement.append(lineBreak1);
+        }
+    }
+
+    function getData() {
+        fetch("http://localhost:3000/todos", {
+            method: "GET",
+        }).then((resp) => {
+            resp.json().then(parsedResponse1);
+        });
+    }
+
+    // Function call to get all the data as soon as the page loads.
+    getData();
+
+    // Making POST request from Send ToDo button!
+    function parsedResponse(data) {
+        let parentElement = document.getElementById('mainArea');
+        let childElement = document.createElement('div');
+        let lineBreak1 = document.createElement('br');
+        let lineBreak2 = document.createElement('br');
+        childElement.setAttribute("id", `${data.id}`);
+        const currentId = data.id;
+
+        // Title
+        let grandChildElement1 = document.createElement('span');
+        grandChildElement1.innerHTML = data.title;
+
+        // Description
+        let grandChildElement2 = document.createElement('span');
+        grandChildElement2.innerHTML = data.desc;
+
+        // Edit Button
+        let grandChildElement3 = document.createElement('button');
+        grandChildElement3.innerHTML = "Edit";
+        grandChildElement3.addEventListener("click", () => {
+            // Edit Area
+            let parentElementEdit = document.getElementById('editArea');
+            let lineBreak3 = document.createElement('br');
+            let lineBreak4 = document.createElement('br');
+
+            // Edit Title Input Box
+            let editTitleInput = document.createElement('input');
+            let Text1 = document.createElement('div');
+            Text1.innerHTML = "Edit Title ->";
+
+            // Edit Description Input Box
+            let editDescriptionInput = document.createElement('input');
+            let Text2 = document.createElement('div');
+            Text2.innerHTML = "Edit Description ->";
+
+            // Save Edit Button
+            let sendEdit = document.createElement('button');
+            sendEdit.innerHTML = "Save Edit";
+            sendEdit.addEventListener("click", () => {
+                let updatedTitle = editTitleInput.value;
+                let updatedDescription = editDescriptionInput.value;
+                console.log(currentId);
+                fetch(`http://localhost:3000/todos/${currentId}`, {
+                    method: "PUT",
+                    body: JSON.stringify({
+                        title: updatedTitle,
+                        desc: updatedDescription
+                    }),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then((res) => {
+                    res.json().then((data) => {
+                        if (data.message) alert(data.message);
+                        else alert("Todo updated successfully");
+                        document.getElementById("editArea").remove();
+
+                        // Changing Title and Description without reloading
+                        grandChildElement1.innerHTML = updatedTitle;
+                        grandChildElement2.innerHTML = updatedDescription;
+                    });
+                })
+            });
+
+
+            parentElementEdit.appendChild(Text1);
+            parentElementEdit.appendChild(editTitleInput);
+            parentElementEdit.appendChild(lineBreak3);
+            parentElementEdit.appendChild(lineBreak4);
+            parentElementEdit.appendChild(Text2);
+            parentElementEdit.appendChild(editDescriptionInput);
+            parentElementEdit.appendChild(sendEdit);
+        });
+
+        // Delete Button
+        let grandChildElement4 = document.createElement('button');
+        grandChildElement4.innerHTML = "Delete";
+        grandChildElement4.addEventListener("click", () => {
+            fetch(`http://localhost:3000/todos/${data.id}`, {
+                method: "DELETE"
+            }).then((resp) => {
+                alert("ToDo deleted successfully!");
+                document.getElementById(`${data.id}`).remove();
+            });
+        });
+
+        childElement.appendChild(grandChildElement1);
+        childElement.appendChild(lineBreak2);
+        childElement.appendChild(grandChildElement2);
+        childElement.appendChild(grandChildElement3);
+        childElement.appendChild(grandChildElement4);
+
+        parentElement.appendChild(childElement);
+        parentElement.append(lineBreak1);
+    }
+
+    function onPress() {
+        let title = document.getElementById("title").value;
+        let description = document.getElementById("description").value;
+
+        if (description === "" || title === "") {
+            alert("Please enter title and description of the TODO");
+            return;
+        }
+
+        document.getElementById("title").value = "";
+        document.getElementById("description").value = "";
+
+        fetch("http://localhost:3000/todos", {
+            method: "POST",
+            body: JSON.stringify({
+                title: title,
+                desc: description
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then((resp) => {
+            resp.json().then(parsedResponse);
+        });
+    }
+</script>
+
+<body bgcolor="#7a7a7a">
+    <center>
+        <h1> TaskBuddy - makes you more productive!</h1>
+    </center>
+    <b>ToDo title =></b>
+    <input type="text" id="title" placeholder="Enter title"></input>
+    <br>
+    <br>
+    <b>ToDo description =></b>
+    <input type="text" id="description" placeholder="Enter description"></input>
+    <button onclick="onPress()">Add ToDo</button>
+    <br>
+    <br>
+    <div id="mainArea"></div>
+    <br>
+    <br>
+    <div id="editArea"></div>
+</body>
