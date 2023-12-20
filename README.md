@@ -1,6 +1,8 @@
-# TASKBuddy - Verison 2
+# TASKBuddy - Verison 3
 
-I have created an express HTTP server in Node.js which will handle the logic of a todo list app and a minimal dynamic frontend using HTML only. It's just a start!
+In TaskBuddy - Verison 3 the backend file structure is optimized increasing the readability. Authentication of the user is introduced by using JSON web token. User endpoints are new which include signup and login of the user.
+
+Frontend is still the same!
 
 I used files as database in this version. (Data is stored in files which makes it persistent!)
 
@@ -37,6 +39,21 @@ The API endpoints are defined below,
    Description: Deletes a todo item identified by its ID.
    Response: 200 OK if the todo item was found and deleted, or 404 Not Found if not found.
    Example: DELETE http://localhost:3000/todos/123
+
+6. GET /user/me - To get the username of the logged in user. 
+   Description: Returns username of the user.
+   Response: 200 OK with an object having username in JSON format.
+   Example: GET http://localhost:3000//user/me 
+
+7. POST /user/signup - To create a new user account. 
+   Description:  Creates a new user account by taking a username and password as input.
+   Response: 200 OK with an object having message and JWT in JSON format.
+   Example: GET http://localhost:3000//user/signup 
+
+8. POST /user/login - To login an existing user account. 
+   Description: Logges in the user by taking username and password as input.
+   Response: 200 OK with an object having message and JWT in JSON format.
+   Example: GET http://localhost:3000//user/login
 
 
 Testing the server - Go in the Backend folder by using `cd Backend` and run `node index.js` command in terminal
