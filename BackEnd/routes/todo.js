@@ -31,11 +31,14 @@ router.get("/:id", authenticateJwt, async (req, res) => {
 router.post("/", authenticateJwt, async (req, res) => {
   const newTitle = req.body.title;
   const newDescription = req.body.description;
+  const newStatus = req.body.IsDone;
+
   if (newTitle && newDescription) {
     let newTodo = {
       title: newTitle,
       description: newDescription,
-      userId : req.userId
+      userId : req.userId,
+      IsDone : newStatus
     };
     const todoToSave = new TODOS(newTodo);
     await todoToSave.save();
@@ -65,6 +68,19 @@ router.put("/:id", authenticateJwt, async (req, res) => {
     res.status(404).json({ message: `Todo with ${id} is not present!` });
   }
 });
+
+router.put("/status/:id", authenticateJwt, async (req, res) => {
+  const newStatus = req.body.IsDone;
+  const TodoId = req.params.id;
+  const todo = await TODOS.findOneAndUpdate({ _id : TodoId},{$set : {IsDone : newStatus}}, { new: true });
+  
+  if(todo){
+    res.json({message : "Congratulations! Keep going."});
+  }
+  else{
+    res.sendStatus(500);
+  }
+}); 
 
 // Handler for deleting the TODO with a specific id
 router.delete("/:id", authenticateJwt, async (req, res) => {
