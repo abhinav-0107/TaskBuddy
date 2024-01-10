@@ -3,9 +3,11 @@ const bodyParser = require("body-parser");
 const { USERS } = require("../db/index.js");
 const jwt = require("jsonwebtoken");
 const { authenticateJwt, SECRET } = require("../middlewares/auth.js");
+const cors = require("cors");
 
 const router = express.Router();
 
+router.use(cors());
 router.use(bodyParser.json());
 
 function generateJwt(payload) {
@@ -51,7 +53,7 @@ router.post("/login", async (req, res) => {
       token: generateJwt({ _id: userExist._id }),
     });
   } else {
-    res.status(403).json({ message: "Invalid username or password" });
+    res.json({ message: "Invalid username or password" });
   }
 });
 
