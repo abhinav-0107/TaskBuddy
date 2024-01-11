@@ -1,22 +1,22 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const { USERS } = require("../db/index.js");
-const jwt = require("jsonwebtoken");
-const { authenticateJwt, SECRET } = require("../middlewares/auth.js");
-const cors = require("cors");
+import express from "express";
+import bodyParser from "body-parser";
+import { USERS } from "../db/index.js";
+import jwt from "jsonwebtoken";
+import { authenticateJwt, SECRET } from  "../middlewares/auth.js";
+import cors from "cors";
 
 const router = express.Router();
 
 router.use(cors());
 router.use(bodyParser.json());
 
-function generateJwt(payload) {
-  const token = jwt.sign(payload, SECRET, { expiresIn: "1h" });
+function generateJwt(payload : object) {
+  const token : string = jwt.sign(payload, SECRET, { expiresIn: "1h" });
   return token;
 }
 
 router.get("/me", authenticateJwt, async (req, res) => {
-  const user = await USERS.findOne({ _id: req.userId });
+  const user = await USERS.findOne({ _id: req.headers["userId"] });
   if (user) {
     res.json({ username: user.username });
   } else {
@@ -57,4 +57,4 @@ router.post("/login", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 // Todos and Admin schema
 const todosSchema = new mongoose.Schema({
@@ -14,10 +14,5 @@ const usersSchema = new mongoose.Schema({
 });
 
 // Defining mongoose collection
-const TODOS = mongoose.model("Todos",todosSchema);
-const USERS = mongoose.model("Users",usersSchema);
- 
-module.exports = {
-    TODOS,
-    USERS
-}
+export const TODOS = mongoose.model("Todos",todosSchema);
+export const USERS = mongoose.model("Users",usersSchema);
