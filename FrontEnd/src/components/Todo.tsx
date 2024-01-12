@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 import TodoCard from "./TodoCard";
 
 export default function Todo() {
-  const [userdetail, setUserDetail] = useState({});
+  const [userdetail, setUserDetail] = useState<object>({});
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState<object[]>([]);
   const navigate = useNavigate();
 
   async function getUsername() {
