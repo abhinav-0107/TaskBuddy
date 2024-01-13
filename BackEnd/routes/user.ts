@@ -2,16 +2,22 @@ import express from "express";
 import bodyParser from "body-parser";
 import { USERS } from "../db/index.js";
 import jwt from "jsonwebtoken";
-import { authenticateJwt, SECRET } from  "../middlewares/auth.js";
+import { authenticateJwt, SECRET } from "../middlewares/auth.js";
 import cors from "cors";
+import { z } from "zod";
 
 const router = express.Router();
 
 router.use(cors());
 router.use(bodyParser.json());
 
-function generateJwt(payload : object) {
-  const token : string = jwt.sign(payload, SECRET, { expiresIn: "1h" });
+const credentialsInput = z.object({
+  username: z.string().min(7).max(21).email(),
+  password: z.string().min(2).max(10),
+});
+
+function generateJwt(payload: object) {
+  const token: string = jwt.sign(payload, SECRET, { expiresIn: "1h" });
   return token;
 }
 
@@ -25,13 +31,24 @@ router.get("/me", authenticateJwt, async (req, res) => {
 });
 
 router.post("/signup", async (req, res) => {
-  const newUser = req.body;
-  const userExist = await USERS.findOne({ username: newUser.username });
-  
+  const parsedInput = credentialsInput.safeParse(req.body);
+
+  if (!parsedInput.success) {
+    res.json({
+      error: parsedInput.error,
+    });
+    return;
+  }
+
+  const username = parsedInput.data.username;
+  const password = parsedInput.data.password;
+
+  const userExist = await USERS.findOne({ username });
+
   if (userExist) {
     res.status(403).json({ message: "User already exist!" });
   } else {
-    const userToSave = new USERS(newUser);
+    const userToSave = new USERS({ username, password });
     await userToSave.save();
     res.send({
       message: "Signup successful!",
@@ -41,10 +58,20 @@ router.post("/signup", async (req, res) => {
 });
 
 router.post("/login", async (req, res) => {
-  const user = req.body;
+  const parsedInput = credentialsInput.safeParse(req.body);
+  if (!parsedInput.success) {
+    res.json({
+      error: parsedInput.error,
+    });
+    return;
+  }
+
+  const username = parsedInput.data.username;
+  const password = parsedInput.data.password;
+
   const userExist = await USERS.findOne({
-    username: user.username,
-    password: user.password,
+    username,
+    password,
   });
 
   if (userExist) {

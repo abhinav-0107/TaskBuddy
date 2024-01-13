@@ -1,11 +1,24 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
+import {z} from "zod";
 
 export const SECRET : string = "S3CR3T";
 
+const authHeaderInput = z.object({
+    authHeader : z.string().min(7)
+});
 
 export function authenticateJwt(req : Request, res : Response , next : NextFunction) {
-    const authHeader = req.headers.authorization;
+    const parsedInput = authHeaderInput.safeParse(req.headers.authorization);
+    if(!parsedInput.success){
+        res.json({
+            message : "Token is suppose to be a string!",
+            error : parsedInput.error
+        });
+        return;
+    }
+
+    const authHeader = parsedInput.data.authHeader;
     if(authHeader){
         const token : string = authHeader.split(' ')[1];
         jwt.verify(token , SECRET , (err, user) => {
