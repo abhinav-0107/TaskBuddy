@@ -4,17 +4,13 @@ import { USERS } from "../db/index.js";
 import jwt from "jsonwebtoken";
 import { authenticateJwt, SECRET } from "../middlewares/auth.js";
 import cors from "cors";
-import { z } from "zod";
+import { credentialsInput } from "@abhinav_0107/common"
 
 const router = express.Router();
 
 router.use(cors());
 router.use(bodyParser.json());
 
-const credentialsInput = z.object({
-  username: z.string().min(7).max(21).email(),
-  password: z.string().min(2).max(10),
-});
 
 function generateJwt(payload: object) {
   const token: string = jwt.sign(payload, SECRET, { expiresIn: "1h" });

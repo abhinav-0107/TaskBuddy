@@ -1,11 +1,17 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { credentialParams } from "@abhinav_0107/common";
 
 function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const loginInput: credentialParams = {
+    username,
+    password,
+  };
 
   return (
     <div>
@@ -27,17 +33,14 @@ function Login() {
         }}
       />
       New here?
-      <a href="http://localhost:5173/signup" >Signup</a>
+      <a href="http://localhost:5173/signup">Signup</a>
       {/* <link>Signin</link> */}
       {/* Login Button */}
       <button
         onClick={async () => {
           const response = await axios.post(
             "http://localhost:3000/user/login",
-            {
-              username,
-              password,
-            },
+            { loginInput },
             {
               headers: {
                 "Content-Type": "application/json",

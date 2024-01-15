@@ -1,17 +1,21 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { credentialParams } from "@abhinav_0107/common";
 
 export default function Signup() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const signupInput: credentialParams = {
+    username,
+    password,
+  };
 
   return (
     <div>
       <h2>Signup</h2>
-      
       {/* Username Input box */}
       <input
         placeholder="Username"
@@ -20,7 +24,6 @@ export default function Signup() {
           setUsername(event.target.value);
         }}
       />
-
       {/* Password Input box */}
       <input
         placeholder="Password"
@@ -31,15 +34,13 @@ export default function Signup() {
       />
       Already Signed up?
       <a href="http://localhost:5173/Login">Login</a>
-
       {/* Signup Button */}
       <button
         onClick={async () => {
           const response = await axios.post(
             "http://localhost:3000/user/signup",
             {
-              username,
-              password,
+              signupInput,
             },
             {
               headers: {
